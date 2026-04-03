@@ -12,6 +12,7 @@
 **Data access:**
 - Sample release: [HuggingFace (sample)](https://huggingface.co/datasets/HenryYHW/PassingCtrl-Sample)
 - Full dataset: [HuggingFace (managed access)](https://huggingface.co/datasets/HenryYHW/PassingCtrl)
+- Video frames (2fps, 224×224): [Google Drive](https://drive.google.com/drive/folders/1KEBvt2aQk-fj6AL7N3Xo-oaXd2j00e3i?usp=drive_link)
 
 ## Benchmark Tasks
 
