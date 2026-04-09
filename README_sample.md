@@ -12,14 +12,14 @@ tags:
 - handover
 - benchmark
 - naturalistic-driving
-pretty_name: BATON
+pretty_name: BATON-Sample
 size_categories:
-- 1T<n<10T
+- 100G<n<1T
 ---
 
 <div align="center">
 
-# 🚗 BATON
+# 🚗 BATON-Sample
 
 ### **B**ehavioral **A**nalysis of **T**ransition and **O**peration in **N**aturalistic Driving
 
@@ -43,6 +43,8 @@ size_categories:
 
 *A large-scale multimodal benchmark for bidirectional human–DAS control transition in naturalistic driving*<br/>
 *Accepted at ACM Multimedia 2026*
+
+> **This is the sample release of BATON** — 43 routes covering all 9 modalities, ready for quick exploration and prototyping. For the full 380-route dataset, see [HenryYHW/BATON](https://huggingface.co/datasets/HenryYHW/BATON).
 
 </div>
 
@@ -81,24 +83,48 @@ size_categories:
 
 ---
 
-## 📊 Dataset at a Glance
+## 📦 Sample Release at a Glance
 
 <div align="center">
 
 | 🌍 Routes | 👤 Drivers | 🚙 Car Models | ⏱️ Duration | 🔄 Handover Events |
 |:---------:|:----------:|:-------------:|:-----------:|:-----------------:|
-| **380** | **127** | **84** | **136.6 h** | **2,892** |
+| **43** | **43** | **~20** | **~15 h** | **~330** |
 
 | 🤖 DAS Driving | 🧑 Human Driving | ⬆️ DAS Handover | ↩️ Human Takeover | 🌍 Coverage |
 |:--------------:|:----------------:|:---------------:|:-----------------:|:-----------:|
-| 52.5% | 47.5% | **1,460** | **1,432** | 6 Continents |
+| ~52% | ~48% | ~165 | ~165 | 5 Continents |
 
 </div>
+
+> **Full dataset:** 380 routes · 127 drivers · 84 car models · 136.6 h · 2,892 handover events — available at [HenryYHW/BATON](https://huggingface.co/datasets/HenryYHW/BATON)
 
 <div align="center">
   <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/DatasetOverview.jpg" width="88%"/>
-  <br/><sub><i>Global distribution of participants, per-driver duration, and handover event breakdown.</i></sub>
+  <br/><sub><i>Global distribution of participants, per-driver duration, and handover event breakdown (full dataset).</i></sub>
 </div>
+
+---
+
+## 📁 Sample Contents
+
+Each of the 43 routes contains all 9 synchronized modalities:
+
+```
+BATON-Sample/
+└── {vehicle_model}/
+    └── {driver_id}/
+        └── {route_hash}/
+            ├── vehicle_dynamics.csv   # Speed, accel, steering, pedals, DAS status
+            ├── planning.csv           # DAS curvature, lane change intent
+            ├── radar.csv              # Lead vehicle distance & relative speed
+            ├── driver_state.csv       # Face pose, eye openness, awareness
+            ├── imu.csv                # 3-axis accel & gyro at 100 Hz
+            ├── gps.csv                # Coordinates, heading
+            ├── localization.csv       # Road curvature, lane position
+            ├── qcamera.mp4            # Front-view video (526×330, H.264, 20 fps)
+            └── dcamera.mp4            # In-cabin fisheye video (1928×1208, HEVC, 20 fps)
+```
 
 ---
 
@@ -142,7 +168,7 @@ size_categories:
 <tr>
   <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_day.jpg" width="100%"/><br/><sub>🎥 Cabin · Day</sub></td>
   <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_night.jpg" width="100%"/><br/><sub>🎥 Cabin · Night</sub></td>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_takeover.jpg" width="100%"/><br/><sub>↩️ Takeover</sub></td>
+  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_takeover.jpg" width="100%"/><br/><sub>↩️ Human Takeover</sub></td>
 </tr>
 </table>
 
@@ -165,8 +191,8 @@ size_categories:
 
 <br/>
 
-| Task | Description | Samples | Labels | Primary Metric |
-|------|-------------|:-------:|--------|:--------------:|
+| Task | Description | Samples (full) | Labels | Primary Metric |
+|------|-------------|:--------------:|--------|:--------------:|
 | 🎯 **Task 1** | Driving action recognition (7-class) | 979,809 | Cruising · Car Following · Accelerating · Braking · Lane Change · Turning · Stopped | Macro-F1 |
 | ⬆️ **Task 2** | Handover prediction (Human→DAS) | 56,564 | Handover (14.9%) · No Handover | AUPRC |
 | ↩️ **Task 3** | Takeover prediction (DAS→Human) | 71,079 | Takeover (11.9%) · No Takeover | AUPRC |
@@ -175,64 +201,28 @@ size_categories:
 
 ---
 
-## 📁 Repository Structure
-
-```
-BATON/
-├── benchmark/                   # Benchmark data and generation code
-│   ├── generate_benchmark.py        # Full benchmark construction pipeline
-│   ├── routes.csv                   # Route metadata (380 routes)
-│   ├── action_labels.csv            # 1 Hz action labels
-│   ├── task1_action_samples.csv     # Task 1 samples
-│   ├── task2_activation_samples_h{1,3,5}.csv   # Task 2 at 3 horizons
-│   ├── task3_takeover_samples_h{1,3,5}.csv     # Task 3 at 3 horizons
-│   ├── split_cross_driver.json      # Primary evaluation split
-│   ├── split_cross_vehicle.json     # Cross-vehicle split
-│   ├── split_random.json            # Random split
-│   └── benchmark_protocol.md        # Detailed protocol specification
-│
-├── baseline/                    # Training and evaluation code
-│   ├── config.py                    # Paths, modality definitions, hyperparameters
-│   ├── dataset.py                   # PyTorch dataset for all tasks
-│   ├── models.py                    # GRU and TCN with gated fusion
-│   ├── metrics.py                   # Evaluation metrics
-│   ├── train_nn.py                  # Neural network training (GRU / TCN)
-│   ├── train_classical.py           # XGBoost and LR baselines
-│   ├── run_vlm.py                   # Zero-shot VLM baselines (Gemini / GPT-4o)
-│   ├── vlm_prompts.py               # VLM prompt construction
-│   └── collect_results.py           # Aggregate and print result tables
-│
-└── data_processing/             # Feature extraction scripts
-    ├── extract_front_video_features.py    # EfficientNet-B0 front video
-    ├── extract_cabin_video_features.py    # EfficientNet-B0 cabin video
-    ├── extract_clip_features.py           # CLIP ViT-B/32 features
-    ├── video_utils.py                     # Shared video decoding utilities
-    └── gps_semantic_enrichment.py         # GPS → road context features
-```
-
----
-
 ## 🚀 Quick Start
 
-### 1. Get the data
+### 1. Get the sample data
 
 ```bash
-# Sample dataset (~few GB, all modalities, 43 routes)
+# Clone this sample dataset (~few GB, all modalities, 43 routes)
 git lfs install
 git clone https://huggingface.co/datasets/HenryYHW/BATON-Sample
 
-# Full dataset — download via HuggingFace Hub
+# Or via Python
+from huggingface_hub import snapshot_download
+snapshot_download('HenryYHW/BATON-Sample', repo_type='dataset', local_dir='./data')
+```
+
+### 2. Get the full dataset
+
+```bash
+# Full dataset (380 routes) — requires HuggingFace account
 python -c "
 from huggingface_hub import snapshot_download
 snapshot_download('HenryYHW/BATON', repo_type='dataset', local_dir='./data')
 "
-```
-
-### 2. Preprocess signals
-
-```bash
-cd baseline
-python preprocess.py
 ```
 
 ### 3. Extract video features
@@ -243,12 +233,9 @@ cd data_processing
 # EfficientNet-B0 features (used in main baselines)
 python extract_front_video_features.py
 python extract_cabin_video_features.py
-
-# CLIP ViT-B/32 features (optional)
-python extract_clip_features.py
 ```
 
-### 4. Train baselines
+### 4. Train baselines (requires full dataset + benchmark files)
 
 ```bash
 cd baseline
@@ -259,19 +246,11 @@ python train_nn.py --task task1 --modality Full-All --model gru --seed 42
 # XGBoost on structured signals — Task 2
 python train_classical.py --task task2 --model xgb --seed 42
 
-# TCN ablation — Task 3, sensors only
-python train_nn.py --task task3 --modality Text --model tcn --seed 42
-
 # Zero-shot VLM baseline (GPT-4o or Gemini 2.5 Flash)
 python run_vlm.py --model gpt4o --task task1
-python run_vlm.py --model gemini --task task2
 ```
 
-### 5. Collect results
-
-```bash
-python collect_results.py   # prints all result tables
-```
+See [GitHub — OpenLKA/BATON](https://github.com/OpenLKA/BATON) for the complete codebase.
 
 ---
 
@@ -293,8 +272,9 @@ python collect_results.py   # prints all result tables
 
 | Resource | Link |
 |----------|------|
-| 📦 Full Dataset | [HuggingFace — HenryYHW/BATON](https://huggingface.co/datasets/HenryYHW/BATON) |
-| 🔍 Sample Dataset (43 routes) | [HuggingFace — HenryYHW/BATON-Sample](https://huggingface.co/datasets/HenryYHW/BATON-Sample) |
+| 🔍 **This Sample** (43 routes) | [HuggingFace — HenryYHW/BATON-Sample](https://huggingface.co/datasets/HenryYHW/BATON-Sample) |
+| 📦 Full Dataset (380 routes) | [HuggingFace — HenryYHW/BATON](https://huggingface.co/datasets/HenryYHW/BATON) |
+| 💻 Code & Baselines | [GitHub — OpenLKA/BATON](https://github.com/OpenLKA/BATON) |
 | 📄 arXiv Paper | [arxiv.org/abs/2604.07263](https://arxiv.org/abs/2604.07263) |
 
 ---
