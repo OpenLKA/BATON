@@ -42,7 +42,7 @@ size_categories:
 </p>
 
 *A large-scale multimodal benchmark for bidirectional human–DAS control transition in naturalistic driving*<br/>
-*Accepted at ACM Multimedia 2026*
+*Submitted to ACM Multimedia 2026*
 
 </div>
 
@@ -302,13 +302,13 @@ python collect_results.py   # prints all result tables
 ## 📜 Citation
 
 ```bibtex
-@inproceedings{wang2026baton,
-  title     = {BATON: A Multimodal Benchmark for Bidirectional Automation Transition
-               Observation in Naturalistic Driving},
-  author    = {Wang, Yuhang and Xu, Yiyao and Yang, Chaoyun and Li, Lingyao
-               and Sun, Jingran and Zhou, Hao},
-  booktitle = {Proceedings of the 34th ACM International Conference on Multimedia},
-  year      = {2026}
+@article{wang2026baton,
+  title   = {BATON: A Multimodal Benchmark for Bidirectional Automation Transition
+             Observation in Naturalistic Driving},
+  author  = {Wang, Yuhang and Xu, Yiyao and Yang, Chaoyun and Li, Lingyao
+             and Sun, Jingran and Zhou, Hao},
+  journal = {arXiv preprint arXiv:2604.07263},
+  year    = {2026}
 }
 ```
 
