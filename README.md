@@ -1,22 +1,3 @@
----
-license: cc-by-nc-4.0
-task_categories:
-- video-classification
-- time-series-forecasting
-language:
-- en
-tags:
-- driving
-- autonomous-driving
-- multimodal
-- handover
-- benchmark
-- naturalistic-driving
-pretty_name: BATON
-size_categories:
-- 1T<n<10T
----
-
 <div align="center">
 
 # 🚗 BATON
@@ -104,10 +85,6 @@ size_categories:
 
 ## 🔬 Data Collection & Modalities
 
-<table>
-<tr>
-<td width="42%" valign="top">
-
 **Setup:** Non-intrusive plug-and-play OBD-II dongle + dual cameras. Drivers use their own vehicles during real daily commutes — no lab, no script.
 
 | Component | Spec |
@@ -128,27 +105,15 @@ size_categories:
 - `qcamera.mp4` — front-view video
 - `dcamera.mp4` — in-cabin fisheye video
 
-</td>
-<td width="58%" valign="top">
+<div align="center">
+  <img src="figs/experiment_method.jpg" width="88%"/>
+</div>
 
-<img src="figs/experiment_method.jpg" width="100%"/>
-
-<table>
-<tr>
-  <td align="center"><img src="figs/qcamera_day.jpg" width="100%"/><br/><sub>📷 Front · Day</sub></td>
-  <td align="center"><img src="figs/qcamera_night.jpg" width="100%"/><br/><sub>📷 Front · Night</sub></td>
-  <td align="center"><img src="figs/qcamera_activation.jpg" width="100%"/><br/><sub>⬆️ DAS Handover</sub></td>
-</tr>
-<tr>
-  <td align="center"><img src="figs/dcamera_day.jpg" width="100%"/><br/><sub>🎥 Cabin · Day</sub></td>
-  <td align="center"><img src="figs/dcamera_night.jpg" width="100%"/><br/><sub>🎥 Cabin · Night</sub></td>
-  <td align="center"><img src="figs/dcamera_takeover.jpg" width="100%"/><br/><sub>↩️ Takeover</sub></td>
-</tr>
-</table>
-
-</td>
-</tr>
-</table>
+| 📷 Front · Day | 📷 Front · Night | ⬆️ DAS Handover |
+|:-:|:-:|:-:|
+| ![](figs/qcamera_day.jpg) | ![](figs/qcamera_night.jpg) | ![](figs/qcamera_activation.jpg) |
+| **🎥 Cabin · Day** | **🎥 Cabin · Night** | **↩️ Human Takeover** |
+| ![](figs/dcamera_day.jpg) | ![](figs/dcamera_night.jpg) | ![](figs/dcamera_takeover.jpg) |
 
 <div align="center">
   <img src="figs/BenchmarkOverview.jpg" width="100%"/>
