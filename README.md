@@ -49,7 +49,7 @@ size_categories:
 ---
 
 <div align="center">
-  <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/teaser.png" width="100%"/>
+  <img src="figs/teaser.png" width="100%"/>
 </div>
 
 ---
@@ -59,22 +59,22 @@ size_categories:
 <table width="100%">
 <tr>
   <td width="38%" align="center" valign="top">
-    <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/gif_fig1.gif" width="100%"/>
+    <img src="figs/gif_fig1.gif" width="100%"/>
     <br/><sub><b>Continuous sequence</b> — cabin fisheye · front view · 5 fps</sub>
   </td>
   <td width="24%" align="center" valign="top">
-    <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/gif_sensors.gif" width="100%"/>
+    <img src="figs/gif_sensors.gif" width="100%"/>
     <br/><sub><b>8 CAN/IMU sensor streams</b><br/>cycling through all channels</sub>
   </td>
   <td width="38%" align="center" valign="top">
-    <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/gif_fig3.gif" width="100%"/>
+    <img src="figs/gif_fig3.gif" width="100%"/>
     <br/><sub><b>Daytime time-lapse</b> — front · cabin · 2-min intervals</sub>
   </td>
 </tr>
 </table>
 
 <div align="center">
-  <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/gif_fig2.gif" width="72%"/>
+  <img src="figs/gif_fig2.gif" width="72%"/>
   <br/>
   <sub><b>Nighttime driving</b> — time-lapse with <b>⬆ DAS Handover</b> and <b>↩ Human Takeover</b> event highlights</sub>
 </div>
@@ -96,7 +96,7 @@ size_categories:
 </div>
 
 <div align="center">
-  <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/DatasetOverview.jpg" width="88%"/>
+  <img src="figs/DatasetOverview.jpg" width="88%"/>
   <br/><sub><i>Global distribution of participants, per-driver duration, and handover event breakdown.</i></sub>
 </div>
 
@@ -131,18 +131,18 @@ size_categories:
 </td>
 <td width="58%" valign="top">
 
-<img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/experiment_method.jpg" width="100%"/>
+<img src="figs/experiment_method.jpg" width="100%"/>
 
 <table>
 <tr>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/qcamera_day.jpg" width="100%"/><br/><sub>📷 Front · Day</sub></td>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/qcamera_night.jpg" width="100%"/><br/><sub>📷 Front · Night</sub></td>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/qcamera_activation.jpg" width="100%"/><br/><sub>⬆️ DAS Handover</sub></td>
+  <td align="center"><img src="figs/qcamera_day.jpg" width="100%"/><br/><sub>📷 Front · Day</sub></td>
+  <td align="center"><img src="figs/qcamera_night.jpg" width="100%"/><br/><sub>📷 Front · Night</sub></td>
+  <td align="center"><img src="figs/qcamera_activation.jpg" width="100%"/><br/><sub>⬆️ DAS Handover</sub></td>
 </tr>
 <tr>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_day.jpg" width="100%"/><br/><sub>🎥 Cabin · Day</sub></td>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_night.jpg" width="100%"/><br/><sub>🎥 Cabin · Night</sub></td>
-  <td align="center"><img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/dcamera_takeover.jpg" width="100%"/><br/><sub>↩️ Takeover</sub></td>
+  <td align="center"><img src="figs/dcamera_day.jpg" width="100%"/><br/><sub>🎥 Cabin · Day</sub></td>
+  <td align="center"><img src="figs/dcamera_night.jpg" width="100%"/><br/><sub>🎥 Cabin · Night</sub></td>
+  <td align="center"><img src="figs/dcamera_takeover.jpg" width="100%"/><br/><sub>↩️ Takeover</sub></td>
 </tr>
 </table>
 
@@ -151,7 +151,7 @@ size_categories:
 </table>
 
 <div align="center">
-  <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/BenchmarkOverview.jpg" width="100%"/>
+  <img src="figs/BenchmarkOverview.jpg" width="100%"/>
   <br/><sub><i>Aligned multimodal streams around a HANDOVER event: cabin video · front video · GPS trajectory · sensor signals.</i></sub>
 </div>
 
@@ -160,7 +160,7 @@ size_categories:
 ## 🏆 Benchmark Tasks
 
 <div align="center">
-  <img src="https://huggingface.co/datasets/HenryYHW/BATON/resolve/main/figs/TaskDistribution.jpg" width="80%"/>
+  <img src="figs/TaskDistribution.jpg" width="80%"/>
 </div>
 
 <br/>
