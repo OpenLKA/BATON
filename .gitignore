@@ -6,3 +6,7 @@ results*/
 *.npz
 .venv/
 frames/
+# large artifacts hosted on Google Drive (exceed GitHub 100MB limit)
+data/
+benchmark_v2/task1_action_samples.csv
+*.mp4.bak

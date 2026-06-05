@@ -20,7 +20,7 @@ from pathlib import Path
 RESULTS_DIR = Path(__file__).parent / "results"
 
 # Metrics to exclude from aggregation (not meaningful across seeds)
-EXCLUDE_METRICS = {"n_pos", "n_neg", "threshold"}
+EXCLUDE_METRICS = {"n_pos", "n_neg", "threshold", "n_events_pos", "n_events_neg"}
 
 
 def load_all_results():

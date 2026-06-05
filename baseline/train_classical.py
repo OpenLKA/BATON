@@ -23,7 +23,8 @@ from config import (
     LABEL2IDX, STRUCT_SEQ_LEN,
 )
 from dataset import PassingCtrlDataset, RouteCache, compute_norm_stats
-from metrics import evaluate_task1, evaluate_binary, find_optimal_f1_threshold
+from metrics import (evaluate_task1, evaluate_binary, find_optimal_f1_threshold,
+                     evaluate_event_level)
 
 logger = logging.getLogger("baseline")
 
@@ -104,7 +105,7 @@ def train_xgb(X_train, y_train, X_val, y_val, task):
             subsample=0.8, colsample_bytree=0.8,
             eval_metric="mlogloss",
             early_stopping_rounds=20,
-            n_jobs=-1, tree_method="hist",
+            n_jobs=-1, tree_method="hist", device="cuda",
             num_class=n_classes,
         )
     else:
@@ -117,7 +118,7 @@ def train_xgb(X_train, y_train, X_val, y_val, task):
             scale_pos_weight=min(spw, 10.0),
             eval_metric="logloss",
             early_stopping_rounds=20,
-            n_jobs=-1, tree_method="hist",
+            n_jobs=-1, tree_method="hist", device="cuda",
         )
 
     model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
@@ -134,16 +135,21 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--last-only", action="store_true",
                         help="Use only last timestep (single-frame ablation)")
+    parser.add_argument("--modality", default=FIXED_MODALITY,
+                        choices=list(MODALITY_CONFIGS.keys()),
+                        help="Modality config (default: Full-Struct+GPS)")
+    parser.add_argument("--t3-suffix", type=str, default="",
+                        help="e.g. _antsafe → use anticipation-safe T3 samples")
     parser.add_argument("--results-dir", type=str, default=None,
                         help="Override results directory")
     args = parser.parse_args()
 
     np.random.seed(args.seed)
     split_file = BENCHMARK_DIR / f"split_{args.split}.json"
-    mod_cfg = MODALITY_CONFIGS[FIXED_MODALITY]
+    mod_cfg = MODALITY_CONFIGS[args.modality]
 
     suffix = "_lastonly" if args.last_only else ""
-    run_name = f"{args.task}_{FIXED_MODALITY}_{args.model}{suffix}_{args.split}_h{args.horizon}_s{args.seed}"
+    run_name = f"{args.task}_{args.modality}_{args.model}{suffix}_{args.split}_h{args.horizon}{args.t3_suffix}_s{args.seed}"
     results_base = Path(args.results_dir) if args.results_dir else RESULTS_DIR
     run_dir = results_base / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -159,7 +165,7 @@ def main():
     logger.info(f"Run: {run_name}")
 
     # Norm stats
-    norm_path = CACHE_DIR / f"norm_{FIXED_MODALITY}_{args.task}_{args.split}_h{args.horizon}.npz"
+    norm_path = CACHE_DIR / f"norm_{args.modality}_{args.task}_{args.split}_h{args.horizon}.npz"
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     if norm_path.exists():
         data = np.load(norm_path)
@@ -174,14 +180,17 @@ def main():
     train_ds = PassingCtrlDataset(
         args.task, "train", split_file, mod_cfg,
         horizon=args.horizon, norm_stats=norm_stats, route_cache=cache,
+        t3_suffix=args.t3_suffix,
     )
     val_ds = PassingCtrlDataset(
         args.task, "val", split_file, mod_cfg,
         horizon=args.horizon, norm_stats=norm_stats, route_cache=cache,
+        t3_suffix=args.t3_suffix,
     )
     test_ds = PassingCtrlDataset(
         args.task, "test", split_file, mod_cfg,
         horizon=args.horizon, norm_stats=norm_stats, route_cache=cache,
+        t3_suffix=args.t3_suffix,
     )
 
     # Eagerly pre-load all route data
@@ -235,6 +244,19 @@ def main():
         val_metrics = evaluate_binary(y_val, val_proba, threshold=opt_threshold)
         test_metrics = evaluate_binary(y_test, test_proba, threshold=opt_threshold)
 
+        # Event-level metrics (B3). Features extracted in dataset order → aligned.
+        n_te = len(y_test)
+        event_metrics = evaluate_event_level(
+            route_ids=test_ds.route_ids[:n_te], end_times=test_ds.ends[:n_te],
+            event_times=test_ds.event_times[:n_te], y_true=y_test, y_scores=test_proba,
+            horizon=args.horizon, threshold=opt_threshold,
+        )
+        test_metrics.update(event_metrics)
+        logger.info(f"Event-level: AUPRC={event_metrics['event_auprc']:.4f} "
+                    f"det_recall={event_metrics['event_detection_recall']:.4f} "
+                    f"median_lead={event_metrics['event_median_lead_time_s']:.2f}s "
+                    f"({event_metrics['n_events_pos']}+/{event_metrics['n_events_neg']}-)")
+
     logger.info(f"\n{'='*60}")
     logger.info(f"TEST RESULTS: {run_name}")
     logger.info(f"{'='*60}")
@@ -247,7 +269,7 @@ def main():
     result = {
         "run_name": run_name,
         "task": args.task,
-        "modality": FIXED_MODALITY,
+        "modality": args.modality,
         "model": args.model,
         "split": args.split,
         "horizon": args.horizon,

@@ -22,6 +22,7 @@ from config import (
     STRUCT_GROUPS, GPS_COLS, GPS_CONTEXT_PATH, ROAD_TYPE_MAP,
     RESAMPLE_HZ,
 )
+from paths import resolve_route_dir, npz_key
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("preprocess")
@@ -77,17 +78,13 @@ def preprocess_struct():
     ok, fail, skip = 0, 0, 0
 
     for idx, row in routes.iterrows():
-        rid = row["route_id"]
-        driver, rhash = rid.split("/")
-        vm = row["vehicle_model"]
-        base = DATASET_ROOT / vm / driver / rhash
-        acm_dirs = sorted(base.glob("ACM_MM/route_*"))
-        if not acm_dirs:
+        rid = row["route_id"]  # route_uid: car_model/dongle_id/route_id/segment_id
+        acm = resolve_route_dir(rid)
+        if not acm.exists():
             fail += 1
             continue
-        acm = acm_dirs[0]
 
-        out_key = rid.replace("/", "__")
+        out_key = npz_key(rid)
         out_path = STRUCT_CACHE_DIR / f"{out_key}.npz"
         if out_path.exists():
             skip += 1

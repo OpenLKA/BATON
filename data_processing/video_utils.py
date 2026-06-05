@@ -22,9 +22,12 @@ FEATURE_DIM = 1280  # EfficientNet-B0
 ENCODER_NAME = "efficientnet_b0"
 BATCH_SIZE = 64
 
-DATASET_ROOT = Path("/home/henry/Desktop/Drive/Dataset")
-BENCHMARK_DIR = Path("/home/henry/Desktop/Drive/HMI/benchmark")
-OUTPUT_DIR = Path("/home/henry/Desktop/Drive/HMI/data")
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "baseline"))
+from config import BENCHMARK_DIR, DATA_DIR, DATASET_ROOT  # noqa: E402
+from paths import discover_segments, route_uid, resolve_route_dir  # noqa: E402
+
+OUTPUT_DIR = DATA_DIR
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
@@ -51,23 +54,21 @@ def load_route_index():
     """Load benchmark routes.csv and build route_id → filesystem mapping."""
     import pandas as pd
     routes = pd.read_csv(BENCHMARK_DIR / "routes.csv")
+    meta_by_rid = {row["route_id"]: row for _, row in routes.iterrows()}
     index = {}
-    for _, row in routes.iterrows():
-        rid = row["route_id"]
-        driver, rhash = rid.split("/")
-        vm = row["vehicle_model"]
-        base = DATASET_ROOT / vm / driver / rhash
-        if not base.exists():
-            logger.warning(f"Route dir not found: {base}")
-            continue
+    for seg in discover_segments():
+        rid = route_uid(seg)            # car_model/dongle_id/route_id/segment_id
+        vm, driver, rhash, segid = rid.split("/")
+        row = meta_by_rid.get(rid)
         index[rid] = {
-            "base_dir": base,
+            "base_dir": seg,            # per-bundle dir directly holds qcamera/dcamera
             "vehicle_model": vm,
             "driver_id": driver,
             "route_hash": rhash,
-            "duration_sec": row["duration_sec"],
-            "n_segments": row["n_segments"],
-            "has_qcamera": row["has_qcamera"],
+            "segment_id": segid,
+            "duration_sec": row["duration_sec"] if row is not None else None,
+            "n_segments": row["n_segments"] if row is not None else None,
+            "has_qcamera": row["has_qcamera"] if row is not None else int((seg / "qcamera.mp4").exists()),
         }
     return index
 
@@ -183,12 +184,16 @@ def load_segment_timing(route_dir):
         list of dicts: [{'seg_num': int, 'start_s': float, 'end_s': float, 'duration_s': float}, ...]
         or None if metadata not found.
     """
-    meta_files = list(Path(route_dir).glob("ACM_MM/*/metadata.json"))
-    if not meta_files:
-        logger.warning(f"No metadata.json in {route_dir}")
-        return None
+    # New layout: metadata.json is directly in the segment-bundle dir.
+    meta_path = Path(route_dir) / "metadata.json"
+    if not meta_path.exists():
+        cand = list(Path(route_dir).glob("ACM_MM/*/metadata.json"))  # legacy fallback
+        if not cand:
+            logger.warning(f"No metadata.json in {route_dir}")
+            return None
+        meta_path = cand[0]
 
-    with open(meta_files[0]) as f:
+    with open(meta_path) as f:
         meta = json.load(f)
 
     segments = []

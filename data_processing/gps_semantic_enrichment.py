@@ -13,11 +13,13 @@ from scipy.signal import savgol_filter
 from math import radians, sin, cos, atan2, degrees, sqrt
 import time, json, sys, glob, traceback
 
-# ── Paths ──
-DATASET_ROOT = Path("/home/henry/Desktop/Drive/Dataset")
-BENCHMARK_DIR = Path("/home/henry/Desktop/Drive/HMI/benchmark")
-OUTPUT_DIR = Path("/home/henry/Desktop/Drive/HMI/data")
-OUTPUT_DIR.mkdir(exist_ok=True)
+# ── Paths ── (resolve via shared baseline modules)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "baseline"))
+from config import BENCHMARK_DIR, DATA_DIR, DATASET_ROOT  # noqa: E402
+from paths import discover_segments, route_uid  # noqa: E402
+
+OUTPUT_DIR = DATA_DIR
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Constants ──
 HACC_THRESHOLD = 50.0       # discard device GPS with hAcc > 50m
@@ -82,22 +84,19 @@ def menger_curvature(x1, y1, x2, y2, x3, y3):
 # ═══════════════════════════════════════════════════════
 
 def build_route_index():
-    """Map route_id → filesystem path for GPS and localization CSVs."""
+    """Map route_uid → filesystem path for GPS and localization CSVs (per-bundle)."""
     routes = pd.read_csv(BENCHMARK_DIR / "routes.csv")
 
-    gps_files = sorted(glob.glob(str(DATASET_ROOT / "*/*/*/ACM_MM/*/gps.csv")))
-
     index = {}
-    for f in gps_files:
-        p = Path(f)
-        driver_id = p.parts[-5]
-        route_hash = p.parts[-4]
-        route_dir = p.parent
-        route_id = f"{driver_id}/{route_hash}"
-        index[route_id] = {
-            'gps_file': str(p),
-            'loc_file': str(route_dir / "localization.csv"),
-            'route_dir': str(route_dir),
+    for seg in discover_segments():
+        gps_file = seg / "gps.csv"
+        if not gps_file.exists():
+            continue
+        rid = route_uid(seg)
+        index[rid] = {
+            'gps_file': str(gps_file),
+            'loc_file': str(seg / "localization.csv"),
+            'route_dir': str(seg),
         }
 
     # Attach metadata from routes.csv

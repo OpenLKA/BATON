@@ -19,10 +19,11 @@ from config import (
     FRONT_VIDEO_DIR, CABIN_VIDEO_DIR,
     PCA_FRONT_VIDEO_DIR, PCA_CABIN_VIDEO_DIR,
     CLIP_FRONT_VIDEO_DIR, CLIP_CABIN_VIDEO_DIR,
+    VJEPA2_FRONT_VIDEO_DIR, VJEPA2_CABIN_VIDEO_DIR,
     STRUCT_GROUPS, GPS_COLS,
     LABEL2IDX, RESAMPLE_HZ, STRUCT_SEQ_LEN,
     VIDEO_SEQ_LEN, VIDEO_FEATURE_DIM, VIDEO_FEATURE_DIM_PCA,
-    VIDEO_FEATURE_DIM_CLIP, CACHE_DIR,
+    VIDEO_FEATURE_DIM_CLIP, VIDEO_FEATURE_DIM_VJEPA2, CACHE_DIR,
 )
 
 logger = logging.getLogger("baseline")
@@ -39,13 +40,16 @@ class RouteCache:
     Total memory: ~2GB struct + ~120MB GPS + ~1.7GB video (if used).
     """
 
-    def __init__(self, use_pca=False, use_clip=False):
+    def __init__(self, use_pca=False, use_clip=False, use_vjepa=False):
         self._struct_cache = {}   # route_id → {csv_name: (t_start, step, data, cols)} or None
         self._gps_cache = {}      # route_id → (ts, arr) or None
         self._video_cache = {}    # (camera, route_id) → (timestamps, features) or None
         self.use_pca = use_pca
         self.use_clip = use_clip
-        if use_clip:
+        self.use_vjepa = use_vjepa
+        if use_vjepa:
+            self.video_feature_dim = VIDEO_FEATURE_DIM_VJEPA2
+        elif use_clip:
             self.video_feature_dim = VIDEO_FEATURE_DIM_CLIP
         elif use_pca:
             self.video_feature_dim = VIDEO_FEATURE_DIM_PCA
@@ -158,7 +162,9 @@ class RouteCache:
         cache_key = (camera, route_id)
         if cache_key in self._video_cache:
             return
-        if self.use_clip:
+        if self.use_vjepa:
+            vid_dir = VJEPA2_FRONT_VIDEO_DIR if camera == "front" else VJEPA2_CABIN_VIDEO_DIR
+        elif self.use_clip:
             vid_dir = CLIP_FRONT_VIDEO_DIR if camera == "front" else CLIP_CABIN_VIDEO_DIR
         elif self.use_pca:
             vid_dir = PCA_FRONT_VIDEO_DIR if camera == "front" else PCA_CABIN_VIDEO_DIR
@@ -234,7 +240,7 @@ class PassingCtrlDataset(Dataset):
 
     def __init__(self, task, split, split_file, modality_config,
                  horizon=3, norm_stats=None, route_cache=None,
-                 single_frame=False):
+                 single_frame=False, t3_suffix=""):
         self.task = task
         self.split = split
         self.modality_config = modality_config
@@ -251,7 +257,8 @@ class PassingCtrlDataset(Dataset):
         elif task == "task2":
             csv_path = BENCHMARK_DIR / f"task2_activation_samples_h{horizon}.csv"
         elif task == "task3":
-            csv_path = BENCHMARK_DIR / f"task3_takeover_samples_h{horizon}.csv"
+            # t3_suffix e.g. "_antsafe" loads the anticipation-safe (window-buffered) samples
+            csv_path = BENCHMARK_DIR / f"task3_takeover_samples_h{horizon}{t3_suffix}.csv"
         else:
             raise ValueError(f"Unknown task: {task}")
 
@@ -267,6 +274,14 @@ class PassingCtrlDataset(Dataset):
             self.labels = df["label"].map(LABEL2IDX).values.astype(np.int64)
         else:
             self.labels = df["label"].values.astype(np.float32)
+
+        # nearest_event_time (Tasks 2/3): real time of the transition a positive
+        # window anticipates; NaN for negatives. Used for event-level eval (B3).
+        if "nearest_event_time" in df.columns:
+            self.event_times = pd.to_numeric(
+                df["nearest_event_time"], errors="coerce").values.astype(np.float64)
+        else:
+            self.event_times = np.full(len(df), np.nan, dtype=np.float64)
 
         self._struct_sources = []
         for group_name in modality_config["struct"]:

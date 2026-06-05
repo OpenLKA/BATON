@@ -14,6 +14,10 @@ from pathlib import Path
 from collections import defaultdict, Counter
 from datetime import datetime
 
+# Shared path module lives in ../baseline
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "baseline"))
+from paths import discover_segments, route_uid, uid_parts, load_meta  # noqa: E402
+
 # ══════════════════════════════════════════════════════════════════
 # FIXED PARAMETERS — DO NOT CHANGE
 # ══════════════════════════════════════════════════════════════════
@@ -36,9 +40,9 @@ STOPPED_SPEED = 0.5     # m/s
 STOPPED_DUR = 2.0       # seconds
 LEAD_DIST_THRESH = 60.0 # meters
 
-# Paths
-HMI_DATASET = Path("/home/henry/Desktop/Drive/HMI/dataset")
-BENCH_DIR = Path("/home/henry/Desktop/Drive/HMI/benchmark")
+# Paths — regenerate into benchmark_v2/ (keep published v1 intact for before/after)
+BENCH_DIR = Path(__file__).resolve().parent.parent / "benchmark_v2"
+BENCH_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFINITION_VERSION = "or_v1"
 
@@ -308,9 +312,10 @@ def get_modality_flags(route_dir):
         "has_imu": int((route_dir / "imu.csv").exists()),
         "has_planning": int((route_dir / "planning.csv").exists()),
     }
-    # Check dcamera raw segments in parent
-    parent = route_dir.parent
-    flags["has_dcamera"] = int(any(parent.glob("*--dcamera.hevc"))) if parent.exists() else 0
+    # New layout: concatenated dcamera.mp4 lives directly in the segment dir
+    # (fall back to raw hevc segments for older layouts).
+    has_dcam = (route_dir / "dcamera.mp4").exists() or any(route_dir.glob("*--dcamera.hevc"))
+    flags["has_dcamera"] = int(has_dcam)
     return flags
 
 
@@ -325,14 +330,15 @@ def main():
     print(f"Started: {datetime.now().isoformat()}")
     print("=" * 70)
 
-    # Discover routes
-    result = subprocess.run(
-        ["find", "-L", str(HMI_DATASET), "-name", "metadata.json",
-         "-path", "*/ACM_MM/*", "-type", "f"],
-        capture_output=True, text=True
-    )
-    meta_files = sorted([f for f in result.stdout.strip().split("\n") if f])
-    print(f"\nFound {len(meta_files)} routes")
+    # Discover routes — one record PER segment-bundle (atomic unit), MOCK excluded.
+    seg_dirs = discover_segments()
+    meta_files = [str(s / "metadata.json") for s in seg_dirs]
+    print(f"\nFound {len(meta_files)} segment-bundles")
+
+    # Emit the path-encoding artifact (route_uid -> on-disk path + summary).
+    from paths import build_route_index
+    n_idx = build_route_index(BENCH_DIR / "route_index.csv")
+    print(f"Wrote route_index.csv ({n_idx} rows)")
 
     # ─────────────────────────────────────────────────────────────
     # Pass 1: routes.csv + events + action labels
@@ -394,9 +400,9 @@ def main():
         with open(mf) as f:
             meta = json.load(f)
 
-        route_id = f"{meta.get('dongle_id', 'unknown')}/{meta.get('route_id', 'unknown')}"
-        driver_id = meta.get("dongle_id", "")
-        vehicle_model = meta.get("car_model", "")
+        # Canonical per-bundle key = path relative to BATON_ROOT (car/dongle/route/segment)
+        route_id = route_uid(route_dir)
+        vehicle_model, driver_id, _route_hash, _segment_id = uid_parts(route_id)
         duration_s = meta.get("total_duration_s", 0)
         n_segments = meta.get("n_segments", 0)
         op_version = meta.get("initData", {}).get("version", "")
@@ -536,13 +542,10 @@ def main():
     print(f"    Action distribution: {dict(action_class_counter)}")
     print(f"    Memory: {mem_mb():.0f} MB")
 
-    # Sanity: check event counts match
-    if abs(total_act - 1460) > 50 or abs(total_take - 1432) > 50:
-        print(f"\n  ⚠ WARNING: Event counts differ significantly from sanity check!")
-        print(f"    Expected: ~1460 act, ~1432 take")
-        print(f"    Got: {total_act} act, {total_take} take")
-        print(f"    Difference may be from metadata vs vd-only route discovery.")
-        print(f"    Continuing (difference is within acceptable range).")
+    # Event counts for the regenerated (v2) dataset. Published v1 had 1460 act / 1432 take
+    # on 136.6 h; v2 is the expanded ~162 h dataset, so growth here is expected & reported.
+    print(f"\n  v2 event totals: {total_act} activations (handover), {total_take} takeovers")
+    print(f"    (published v1 reference: 1460 / 1432 on 136.6 h)")
 
     # ─────────────────────────────────────────────────────────────
     # Pass 2: Generate benchmark samples

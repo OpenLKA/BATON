@@ -164,7 +164,23 @@ def process_route(route_id, info, model, device):
         "error": None,
     }
 
-    # Find dcamera segments
+    # New layout: a single concatenated dcamera.mp4 directly in the segment dir.
+    dcam_mp4 = Path(route_dir) / "dcamera.mp4"
+    if dcam_mp4.exists() and dcam_mp4.stat().st_size > 1000:
+        try:
+            frames, _ = decode_video_pipe(str(dcam_mp4), duration_s=info.get("duration_sec"))
+            if frames is not None and len(frames) > 0:
+                timestamps = np.arange(len(frames), dtype=np.float32) / FPS
+                features = extract_features_from_frames(frames, model, device)
+                save_route_features(out_file, timestamps, features)
+                result.update(method="dcamera_mp4", n_frames=len(frames),
+                              duration_s=float(timestamps[-1]) if len(timestamps) else 0.0,
+                              success=True)
+                return result
+        except Exception as e:
+            logger.warning(f"  dcamera.mp4 decode failed for {route_id}: {e}")
+
+    # Legacy fallback: concatenate raw dcamera.hevc segments.
     dcam_segments = find_dcamera_segments(route_dir)
     result["n_segments"] = len(dcam_segments)
 

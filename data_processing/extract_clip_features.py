@@ -117,7 +117,9 @@ def find_video_source(route_dir, camera):
 
     if camera == "front":
         # Priority: qcamera.mp4 > qcamera.ts > fcamera.hevc
-        mp4_files = sorted(route_dir.glob("ACM_MM/*/qcamera.mp4"))
+        # New layout: qcamera.mp4 directly in segment dir; legacy: under ACM_MM/.
+        mp4_files = ([route_dir / "qcamera.mp4"] if (route_dir / "qcamera.mp4").exists()
+                     else sorted(route_dir.glob("ACM_MM/*/qcamera.mp4")))
         if mp4_files and mp4_files[0].stat().st_size > 1000:
             return "qcamera_mp4", mp4_files[0]
 

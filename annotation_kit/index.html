@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>BATON Task 1 — Driving-Action Annotation</title>
+<style>
+  :root { --bg:#11151c; --fg:#e6edf3; --mut:#8b949e; --ok:#2ea043; --bad:#d1242f; --acc:#388bfd; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.4 system-ui,sans-serif; }
+  .wrap { max-width:980px; margin:0 auto; padding:18px; }
+  h1 { font-size:18px; margin:0 0 8px; }
+  .bar { height:8px; background:#222a35; border-radius:4px; overflow:hidden; margin:8px 0; }
+  .bar > div { height:100%; background:var(--acc); width:0; transition:width .15s; }
+  .row { display:flex; gap:18px; align-items:flex-start; }
+  video { width:640px; max-width:64vw; background:#000; border-radius:8px; }
+  .side { flex:1; min-width:220px; }
+  .rule { font-size:14px; padding:8px 10px; border-radius:8px; background:#1b2430; margin-bottom:10px; }
+  .rule b { color:var(--acc); }
+  .keys { display:grid; grid-template-columns:1fr; gap:6px; }
+  .key { display:flex; gap:10px; align-items:center; padding:8px 10px; border-radius:8px;
+         background:#1b2430; cursor:pointer; user-select:none; }
+  .key kbd { background:#0d1117; border:1px solid #30363d; border-radius:5px; padding:2px 8px;
+             font-weight:700; min-width:22px; text-align:center; }
+  .key small { color:var(--mut); }
+  .key.cur { outline:2px solid var(--acc); }
+  .fb { font-weight:700; margin-left:auto; }
+  .fb.ok { color:var(--ok); } .fb.bad { color:var(--bad); }
+  .meta { color:var(--mut); font-size:12.5px; margin:6px 0; }
+  .toolbar { display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap; }
+  button { background:#21262d; color:var(--fg); border:1px solid #30363d; border-radius:7px;
+           padding:8px 12px; cursor:pointer; font-size:14px; }
+  button.primary { background:var(--acc); border-color:var(--acc); color:#fff; font-weight:700; }
+  .hint { color:var(--mut); font-size:12.5px; }
+  .blindon { color:var(--bad); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>BATON Task 1 — Driving-Action Annotation <span class="hint">(keys 1–7 · ←/→ nav · R replay · B blind)</span></h1>
+  <div class="bar"><div id="pbar"></div></div>
+  <div class="meta" id="prog"></div>
+
+  <div class="row">
+    <div>
+      <video id="vid" autoplay loop muted playsinline></video>
+      <div class="meta" id="vmeta"></div>
+    </div>
+    <div class="side">
+      <div class="rule" id="rule"></div>
+      <div class="keys" id="keys"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button onclick="prev()">◀ Prev (←)</button>
+    <button onclick="next()">Next (→) ▶</button>
+    <button onclick="replay()">Replay (R)</button>
+    <button onclick="toggleBlind()" id="blindbtn">Blind: OFF (B)</button>
+    <button class="primary" onclick="download()">⤓ Download annotations.csv</button>
+    <span class="hint" id="savehint"></span>
+  </div>
+  <p class="hint">Label what the <b>ego vehicle</b> is doing in the clip. Definitions:
+    Cruising = steady speed, no notable accel/brake/turn/close-lead ·
+    CarFollowing = following a lead at steady gap · Stopped = stationary ·
+    Turning = turning/curve (clear steering) · Braking = slowing/braking ·
+    Accelerating = speeding up · LaneChange = lateral lane change.
+    Your label is saved automatically; click Download when finished (or partway).</p>
+</div>
+
+<script src="manifest.js"></script>
+<script>
+const CLASSES = ["Cruising","CarFollowing","Stopped","Turning","Braking","Accelerating","LaneChange"];
+const LS = "baton_task1_annotations";
+let ann = JSON.parse(localStorage.getItem(LS) || "{}");  // idx -> human_label
+let blind = false;
+let i = 0;
+// resume at first unlabeled
+for (let k=0;k<MANIFEST.length;k++){ if(!(k in ann)){ i=k; break; } }
+
+const vid=document.getElementById("vid"), rule=document.getElementById("rule"),
+      keysEl=document.getElementById("keys"), prog=document.getElementById("prog"),
+      pbar=document.getElementById("pbar"), vmeta=document.getElementById("vmeta"),
+      savehint=document.getElementById("savehint");
+
+function buildKeys(){
+  keysEl.innerHTML="";
+  CLASSES.forEach((c,n)=>{
+    const d=document.createElement("div"); d.className="key"; d.id="k"+n;
+    d.innerHTML=`<kbd>${n+1}</kbd> <span>${c}</span>`;
+    d.onclick=()=>label(c);
+    keysEl.appendChild(d);
+  });
+}
+function render(){
+  const m=MANIFEST[i];
+  vid.src=m.clip; vid.load();
+  vmeta.textContent=`#${m.idx}  ${m.route_id}  [${m.start}–${m.end}s]  ADAS=${m.adas_state}`;
+  const human=ann[i];
+  if(blind){ rule.innerHTML=`<b>Rule label hidden</b> (blind mode)`; }
+  else {
+    let fb="";
+    if(human){ const ok=human===m.rule_label; fb=`<span class="fb ${ok?'ok':'bad'}">${ok?'✓ match':'✗ differ'}</span>`; }
+    rule.innerHTML=`Rule label: <b>${m.rule_label}</b> ${fb}`;
+  }
+  CLASSES.forEach((c,n)=>{
+    const el=document.getElementById("k"+n);
+    el.className="key"+(human===c?" cur":"");
+  });
+  const done=Object.keys(ann).length;
+  prog.textContent=`Window ${i+1} / ${MANIFEST.length}   ·   labeled ${done} / ${MANIFEST.length}`;
+  pbar.style.width=(100*done/MANIFEST.length)+"%";
+}
+function label(c){
+  ann[i]=c; localStorage.setItem(LS, JSON.stringify(ann));
+  savehint.textContent="saved ✓"; setTimeout(()=>savehint.textContent="",800);
+  render();
+  setTimeout(()=>{ if(i<MANIFEST.length-1){ i++; render(); } }, 180);
+}
+function next(){ if(i<MANIFEST.length-1){i++;render();} }
+function prev(){ if(i>0){i--;render();} }
+function replay(){ vid.currentTime=0; vid.play(); }
+function toggleBlind(){ blind=!blind; document.getElementById("blindbtn").textContent="Blind: "+(blind?"ON":"OFF")+" (B)"; document.getElementById("blindbtn").className=blind?"blindon":""; render(); }
+function download(){
+  let csv="idx,sample_id,route_id,rule_label,human_label,agree\n";
+  MANIFEST.forEach((m,k)=>{ const h=ann[k]||""; const a=h?(h===m.rule_label?1:0):"";
+    csv+=`${m.idx},${m.sample_id},${m.route_id},${m.rule_label},${h},${a}\n`; });
+  const b=new Blob([csv],{type:"text/csv"}); const u=URL.createObjectURL(b);
+  const a=document.createElement("a"); a.href=u; a.download="annotations.csv"; a.click();
+}
+document.addEventListener("keydown",e=>{
+  if(e.key>="1"&&e.key<="7"){ label(CLASSES[+e.key-1]); e.preventDefault(); }
+  else if(e.key==="ArrowRight"){ next(); } else if(e.key==="ArrowLeft"){ prev(); }
+  else if(e.key.toLowerCase()==="r"){ replay(); } else if(e.key.toLowerCase()==="b"){ toggleBlind(); }
+});
+buildKeys(); render();
+</script>
+</body>
+</html>

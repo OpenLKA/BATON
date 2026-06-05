@@ -1,0 +1,30 @@
+Labeled windows: 500
+Overall rule↔human agreement (accuracy): 0.960
+Cohen's kappa: 0.953
+
+Per-class (rule labels vs human as ground truth):
+              precision    recall  f1-score   support
+
+Accelerating      0.944     0.986     0.965        69
+     Braking      0.972     0.946     0.959        74
+CarFollowing      0.986     0.986     0.986        71
+    Cruising      1.000     0.947     0.973        75
+  LaneChange      0.944     0.971     0.957        69
+     Stopped      0.986     0.947     0.966        75
+     Turning      0.887     0.940     0.913        67
+
+    accuracy                          0.960       500
+   macro avg      0.960     0.960     0.960       500
+weighted avg      0.961     0.960     0.960       500
+
+Confusion matrix (rows=human, cols=rule):
+       Accel  Braki  CarFo  Cruis  LaneC  Stopp  Turni
+Accel     68      1      0      0      0      0      0
+Braki      1     70      0      0      0      1      2
+CarFo      1      0     70      0      0      0      0
+Cruis      0      0      0     71      2      0      2
+LaneC      1      0      1      0     67      0      0
+Stopp      0      0      0      0      0     71      4
+Turni      1      1      0      0      2      0     63
+
+LaneChange: precision=0.944 recall=0.971 F1=0.957 (human-confirmed rule LaneChanges)
