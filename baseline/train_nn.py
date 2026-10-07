@@ -540,7 +540,8 @@ def main():
     parser.add_argument("--reweight-leadtime", type=float, default=0.0,
                         help="upweight early positives: w = 1 + alpha*lead_time")
     parser.add_argument("--split", default="cross_driver",
-                        choices=["cross_driver", "cross_vehicle", "random"])
+                        choices=["cross_driver", "cross_vehicle", "random",
+                                 "within_device_temporal"])
     parser.add_argument("--horizon", type=int, default=3, choices=[1, 3, 5])
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", default="cuda")

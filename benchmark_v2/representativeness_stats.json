@@ -1,0 +1,66 @@
+{
+ "four_state": {
+  "hours": {
+   "lat0_long0": 73.27450391774273,
+   "lat0_long1": 11.026933086862167,
+   "lat1_long0": 15.424716321897382,
+   "lat1_long1": 62.37769860574976
+  },
+  "share": {
+   "lat0_long0": 0.452021978776706,
+   "lat0_long1": 0.06802388071241297,
+   "lat1_long0": 0.09515329918467222,
+   "lat1_long1": 0.3848008413262088
+  },
+  "raw_or_transition_subtypes": {
+   "deactivation:long_only": 977,
+   "activation:both": 706,
+   "activation:long_only": 416,
+   "activation:lat_only": 1112,
+   "deactivation:lat_only": 1003,
+   "deactivation:both": 244
+  },
+  "n_routes_missing_cache": 0,
+  "note": "raw un-debounced OR-transitions; benchmark events apply the debounce/merge filters"
+ },
+ "bipartite": {
+  "n_devices": 150,
+  "n_vehicle_models": 99,
+  "devices_spanning_multiple_models": 4,
+  "models_with_multiple_devices": 28,
+  "max_devices_per_model": 7,
+  "driver_equals_dongle": true
+ },
+ "concentration": {
+  "hours_top5_driver_share": 0.31328801083133884,
+  "hours_top20_driver_share": 0.6014983055041427,
+  "transitions_top5_driver_share": 0.27497912607848596,
+  "median_hours_per_driver": 0.41379166666666667,
+  "max_hours_one_driver": 22.746138888888883,
+  "hours_top5_model_share": 0.40840563165188365,
+  "drivers_with_lt_30min": 80
+ },
+ "op_version_top": {
+  "2026.001.000": 83,
+  "0.10.1": 58,
+  "2025.003.000": 36,
+  "0.10.0": 35,
+  "0.11.1": 31,
+  "0.10.4": 27,
+  "0.10.3": 27,
+  "0.9.8": 27
+ },
+ "device_type": {
+  "tizi": 281,
+  "tici": 148,
+  "mici": 132,
+  "unknown": 2,
+  "neo": 2
+ },
+ "route_duration_min": {
+  "median": 6.998333333333333,
+  "p10": 1.0,
+  "p90": 45.72666666666669,
+  "max": 344.385
+ }
+}

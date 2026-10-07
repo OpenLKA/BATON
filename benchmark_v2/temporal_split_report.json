@@ -1,0 +1,967 @@
+{
+  "split_within_device_temporal": {
+    "train_n_routes": 405,
+    "train_n_activations": 1230,
+    "train_n_takeovers": 1219,
+    "val_n_routes": 68,
+    "val_n_activations": 229,
+    "val_n_takeovers": 222,
+    "test_n_routes": 92,
+    "test_n_activations": 341,
+    "test_n_takeovers": 352,
+    "n_devices_train": 150,
+    "n_devices_val": 45,
+    "n_devices_test": 56,
+    "description": "Within each device (dongle) with >=3 routes, routes are ordered by start time (date-format route names first, then hex-counter route names, then segment start) and assigned earliest 70% -> train, next 15% -> val, latest 15% -> test; devices with <3 routes go entirely to train. Same devices appear in all partitions, so driver/device/vehicle identity is NOT a confound; only time separates partitions."
+  },
+  "methods": {
+    "xgb_stats_task2": {
+      "within_device_temporal": {
+        "seeds": {
+          "task2_WM-stats-safe_xgb_within_device_temporal_h3_s42": {
+            "auprc": 0.4513,
+            "auc_roc": 0.7819,
+            "event_auprc": 0.3411,
+            "precision_at_recall_0.8": 0.2376,
+            "event_detection_recall": 0.7067
+          },
+          "task2_WM-stats-safe_xgb_within_device_temporal_h3_s123": {
+            "auprc": 0.4552,
+            "auc_roc": 0.7876,
+            "event_auprc": 0.3394,
+            "precision_at_recall_0.8": 0.2377,
+            "event_detection_recall": 0.7155
+          },
+          "task2_WM-stats-safe_xgb_within_device_temporal_h3_s7": {
+            "auprc": 0.454,
+            "auc_roc": 0.7833,
+            "event_auprc": 0.3413,
+            "precision_at_recall_0.8": 0.2385,
+            "event_detection_recall": 0.7097
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4535,
+            "std": 0.0017,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7842,
+            "std": 0.0024,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.3406,
+            "std": 0.0008,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2379,
+            "std": 0.0004,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.7107,
+            "std": 0.0037,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_driver": {
+        "seeds": {
+          "task2_WM-stats-safe_xgb_cross_driver_h3_s42": {
+            "auprc": 0.2407,
+            "auc_roc": 0.6605,
+            "event_auprc": 0.1146,
+            "precision_at_recall_0.8": 0.2003,
+            "event_detection_recall": 0.7431
+          },
+          "task2_WM-stats-safe_xgb_cross_driver_h3_s123": {
+            "auprc": 0.2331,
+            "auc_roc": 0.6642,
+            "event_auprc": 0.097,
+            "precision_at_recall_0.8": 0.1995,
+            "event_detection_recall": 0.7064
+          },
+          "task2_WM-stats-safe_xgb_cross_driver_h3_s7": {
+            "auprc": 0.2341,
+            "auc_roc": 0.6635,
+            "event_auprc": 0.0983,
+            "precision_at_recall_0.8": 0.1992,
+            "event_detection_recall": 0.6835
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.2359,
+            "std": 0.0034,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.6627,
+            "std": 0.0016,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.1033,
+            "std": 0.008,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1997,
+            "std": 0.0005,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.711,
+            "std": 0.0246,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_vehicle": {
+        "seeds": {
+          "task2_WM-stats-safe_xgb_cross_vehicle_h3_s42": {
+            "auprc": 0.3665,
+            "auc_roc": 0.7311,
+            "event_auprc": 0.1978,
+            "precision_at_recall_0.8": 0.2814,
+            "event_detection_recall": 0.6085
+          },
+          "task2_WM-stats-safe_xgb_cross_vehicle_h3_s123": {
+            "auprc": 0.3617,
+            "auc_roc": 0.7302,
+            "event_auprc": 0.1925,
+            "precision_at_recall_0.8": 0.2852,
+            "event_detection_recall": 0.6899
+          },
+          "task2_WM-stats-safe_xgb_cross_vehicle_h3_s7": {
+            "auprc": 0.3518,
+            "auc_roc": 0.732,
+            "event_auprc": 0.1785,
+            "precision_at_recall_0.8": 0.2891,
+            "event_detection_recall": 0.6085
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.36,
+            "std": 0.0062,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7311,
+            "std": 0.0007,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.1896,
+            "std": 0.0081,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2852,
+            "std": 0.0032,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.6357,
+            "std": 0.0384,
+            "n_seeds": 3
+          }
+        }
+      }
+    },
+    "xgb_statspose_task2": {
+      "within_device_temporal": {
+        "seeds": {
+          "task2_WM-statspose-safe_xgb_within_device_temporal_h3_s42": {
+            "auprc": 0.4614,
+            "auc_roc": 0.7965,
+            "event_auprc": 0.3247,
+            "precision_at_recall_0.8": 0.2604,
+            "event_detection_recall": 0.6422
+          },
+          "task2_WM-statspose-safe_xgb_within_device_temporal_h3_s123": {
+            "auprc": 0.4628,
+            "auc_roc": 0.8042,
+            "event_auprc": 0.322,
+            "precision_at_recall_0.8": 0.2682,
+            "event_detection_recall": 0.6364
+          },
+          "task2_WM-statspose-safe_xgb_within_device_temporal_h3_s7": {
+            "auprc": 0.471,
+            "auc_roc": 0.8073,
+            "event_auprc": 0.3355,
+            "precision_at_recall_0.8": 0.271,
+            "event_detection_recall": 0.6686
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4651,
+            "std": 0.0042,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.8027,
+            "std": 0.0045,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.3274,
+            "std": 0.0058,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2665,
+            "std": 0.0045,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.6491,
+            "std": 0.014,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_driver": {
+        "seeds": {
+          "task2_WM-statspose-safe_xgb_cross_driver_h3_s42": {
+            "auprc": 0.2607,
+            "auc_roc": 0.6714,
+            "event_auprc": 0.1165,
+            "precision_at_recall_0.8": 0.1995,
+            "event_detection_recall": 0.7706
+          },
+          "task2_WM-statspose-safe_xgb_cross_driver_h3_s123": {
+            "auprc": 0.2536,
+            "auc_roc": 0.6663,
+            "event_auprc": 0.1106,
+            "precision_at_recall_0.8": 0.1939,
+            "event_detection_recall": 0.5872
+          },
+          "task2_WM-statspose-safe_xgb_cross_driver_h3_s7": {
+            "auprc": 0.2598,
+            "auc_roc": 0.6685,
+            "event_auprc": 0.1146,
+            "precision_at_recall_0.8": 0.1944,
+            "event_detection_recall": 0.8486
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.258,
+            "std": 0.0032,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.6687,
+            "std": 0.0021,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.1139,
+            "std": 0.0024,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1959,
+            "std": 0.0026,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.7355,
+            "std": 0.1096,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_vehicle": {
+        "seeds": {
+          "task2_WM-statspose-safe_xgb_cross_vehicle_h3_s42": {
+            "auprc": 0.4255,
+            "auc_roc": 0.7751,
+            "event_auprc": 0.2489,
+            "precision_at_recall_0.8": 0.3063,
+            "event_detection_recall": 0.7287
+          },
+          "task2_WM-statspose-safe_xgb_cross_vehicle_h3_s123": {
+            "auprc": 0.4354,
+            "auc_roc": 0.7751,
+            "event_auprc": 0.2566,
+            "precision_at_recall_0.8": 0.3026,
+            "event_detection_recall": 0.6822
+          },
+          "task2_WM-statspose-safe_xgb_cross_vehicle_h3_s7": {
+            "auprc": 0.4399,
+            "auc_roc": 0.7757,
+            "event_auprc": 0.265,
+            "precision_at_recall_0.8": 0.3061,
+            "event_detection_recall": 0.7016
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4336,
+            "std": 0.006,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7753,
+            "std": 0.0003,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.2568,
+            "std": 0.0066,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.305,
+            "std": 0.0017,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.7041,
+            "std": 0.0191,
+            "n_seeds": 3
+          }
+        }
+      }
+    },
+    "gru_SafeFullStruct_task2": {
+      "within_device_temporal": {
+        "seeds": {
+          "task2_Safe-Full-Struct_gru_within_device_temporal_h3_s42": {
+            "auprc": 0.3775,
+            "auc_roc": 0.7788,
+            "event_auprc": 0.212,
+            "precision_at_recall_0.8": 0.2639,
+            "event_detection_recall": 0.7537
+          },
+          "task2_Safe-Full-Struct_gru_within_device_temporal_h3_s123": {
+            "auprc": 0.3469,
+            "auc_roc": 0.7533,
+            "event_auprc": 0.184,
+            "precision_at_recall_0.8": 0.2259,
+            "event_detection_recall": 0.7478
+          },
+          "task2_Safe-Full-Struct_gru_within_device_temporal_h3_s7": {
+            "auprc": 0.3297,
+            "auc_roc": 0.7542,
+            "event_auprc": 0.1668,
+            "precision_at_recall_0.8": 0.2446,
+            "event_detection_recall": 0.7859
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.3513,
+            "std": 0.0198,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7621,
+            "std": 0.0118,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.1876,
+            "std": 0.0186,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2448,
+            "std": 0.0155,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.7625,
+            "std": 0.0168,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_driver": {
+        "seeds": {
+          "task2_Safe-Full-Struct_gru_cross_driver_h3_s42": {
+            "auprc": 0.1912,
+            "auc_roc": 0.6207,
+            "event_auprc": 0.0637,
+            "precision_at_recall_0.8": 0.1849,
+            "event_detection_recall": 0.6606
+          },
+          "task2_Safe-Full-Struct_gru_cross_driver_h3_s123": {
+            "auprc": 0.213,
+            "auc_roc": 0.6452,
+            "event_auprc": 0.0781,
+            "precision_at_recall_0.8": 0.1889,
+            "event_detection_recall": 0.6376
+          },
+          "task2_Safe-Full-Struct_gru_cross_driver_h3_s7": {
+            "auprc": 0.2009,
+            "auc_roc": 0.6289,
+            "event_auprc": 0.0734,
+            "precision_at_recall_0.8": 0.1852,
+            "event_detection_recall": 0.7385
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.2017,
+            "std": 0.0089,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.6316,
+            "std": 0.0102,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.0717,
+            "std": 0.006,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1864,
+            "std": 0.0018,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.6789,
+            "std": 0.0432,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_vehicle": {
+        "seeds": {
+          "task2_Safe-Full-Struct_gru_cross_vehicle_h3_s42": {
+            "auprc": 0.3495,
+            "auc_roc": 0.732,
+            "event_auprc": 0.1626,
+            "precision_at_recall_0.8": 0.2659,
+            "event_detection_recall": 0.624
+          },
+          "task2_Safe-Full-Struct_gru_cross_vehicle_h3_s123": {
+            "auprc": 0.3231,
+            "auc_roc": 0.7151,
+            "event_auprc": 0.1533,
+            "precision_at_recall_0.8": 0.2611,
+            "event_detection_recall": 0.7248
+          },
+          "task2_Safe-Full-Struct_gru_cross_vehicle_h3_s7": {
+            "auprc": 0.339,
+            "auc_roc": 0.7283,
+            "event_auprc": 0.1696,
+            "precision_at_recall_0.8": 0.2759,
+            "event_detection_recall": 0.7713
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.3372,
+            "std": 0.0108,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7252,
+            "std": 0.0073,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.1618,
+            "std": 0.0067,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2676,
+            "std": 0.0062,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.7067,
+            "std": 0.0615,
+            "n_seeds": 3
+          }
+        }
+      }
+    },
+    "xgb_stats_task3": {
+      "within_device_temporal": {
+        "seeds": {
+          "task3_WM-stats-safe_xgb_within_device_temporal_h3_s42": {
+            "auprc": 0.5317,
+            "auc_roc": 0.8056,
+            "event_auprc": 0.4207,
+            "precision_at_recall_0.8": 0.1921,
+            "event_detection_recall": 0.5185
+          },
+          "task3_WM-stats-safe_xgb_within_device_temporal_h3_s123": {
+            "auprc": 0.5316,
+            "auc_roc": 0.8067,
+            "event_auprc": 0.4226,
+            "precision_at_recall_0.8": 0.198,
+            "event_detection_recall": 0.5043
+          },
+          "task3_WM-stats-safe_xgb_within_device_temporal_h3_s7": {
+            "auprc": 0.5334,
+            "auc_roc": 0.8085,
+            "event_auprc": 0.4248,
+            "precision_at_recall_0.8": 0.2022,
+            "event_detection_recall": 0.4872
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.5322,
+            "std": 0.0008,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.8069,
+            "std": 0.0012,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.4227,
+            "std": 0.0017,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1974,
+            "std": 0.0041,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.5033,
+            "std": 0.0128,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_driver": {
+        "seeds": {
+          "task3_WM-stats-safe_xgb_cross_driver_h3_s42": {
+            "auprc": 0.4842,
+            "auc_roc": 0.7578,
+            "event_auprc": 0.3794,
+            "precision_at_recall_0.8": 0.1824,
+            "event_detection_recall": 0.4885
+          },
+          "task3_WM-stats-safe_xgb_cross_driver_h3_s123": {
+            "auprc": 0.484,
+            "auc_roc": 0.7605,
+            "event_auprc": 0.3815,
+            "precision_at_recall_0.8": 0.1862,
+            "event_detection_recall": 0.4793
+          },
+          "task3_WM-stats-safe_xgb_cross_driver_h3_s7": {
+            "auprc": 0.4694,
+            "auc_roc": 0.7446,
+            "event_auprc": 0.3775,
+            "precision_at_recall_0.8": 0.173,
+            "event_detection_recall": 0.5023
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4792,
+            "std": 0.0069,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7543,
+            "std": 0.0069,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.3795,
+            "std": 0.0017,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1805,
+            "std": 0.0055,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.49,
+            "std": 0.0095,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_vehicle": {
+        "seeds": {
+          "task3_WM-stats-safe_xgb_cross_vehicle_h3_s42": {
+            "auprc": 0.4438,
+            "auc_roc": 0.7775,
+            "event_auprc": 0.3669,
+            "precision_at_recall_0.8": 0.18,
+            "event_detection_recall": 0.5763
+          },
+          "task3_WM-stats-safe_xgb_cross_vehicle_h3_s123": {
+            "auprc": 0.441,
+            "auc_roc": 0.7755,
+            "event_auprc": 0.3608,
+            "precision_at_recall_0.8": 0.1803,
+            "event_detection_recall": 0.5229
+          },
+          "task3_WM-stats-safe_xgb_cross_vehicle_h3_s7": {
+            "auprc": 0.4435,
+            "auc_roc": 0.779,
+            "event_auprc": 0.3659,
+            "precision_at_recall_0.8": 0.1865,
+            "event_detection_recall": 0.5382
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4428,
+            "std": 0.0012,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7773,
+            "std": 0.0014,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.3645,
+            "std": 0.0027,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1823,
+            "std": 0.003,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.5458,
+            "std": 0.0225,
+            "n_seeds": 3
+          }
+        }
+      }
+    },
+    "xgb_statspose_task3": {
+      "within_device_temporal": {
+        "seeds": {
+          "task3_WM-statspose-safe_xgb_within_device_temporal_h3_s42": {
+            "auprc": 0.5656,
+            "auc_roc": 0.8352,
+            "event_auprc": 0.4672,
+            "precision_at_recall_0.8": 0.2312,
+            "event_detection_recall": 0.5812
+          },
+          "task3_WM-statspose-safe_xgb_within_device_temporal_h3_s123": {
+            "auprc": 0.5673,
+            "auc_roc": 0.8364,
+            "event_auprc": 0.4703,
+            "precision_at_recall_0.8": 0.2305,
+            "event_detection_recall": 0.584
+          },
+          "task3_WM-statspose-safe_xgb_within_device_temporal_h3_s7": {
+            "auprc": 0.5689,
+            "auc_roc": 0.836,
+            "event_auprc": 0.4691,
+            "precision_at_recall_0.8": 0.2287,
+            "event_detection_recall": 0.6268
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.5673,
+            "std": 0.0013,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.8359,
+            "std": 0.0005,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.4689,
+            "std": 0.0013,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2301,
+            "std": 0.0011,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.5973,
+            "std": 0.0208,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_driver": {
+        "seeds": {
+          "task3_WM-statspose-safe_xgb_cross_driver_h3_s42": {
+            "auprc": 0.5146,
+            "auc_roc": 0.7944,
+            "event_auprc": 0.411,
+            "precision_at_recall_0.8": 0.2181,
+            "event_detection_recall": 0.5253
+          },
+          "task3_WM-statspose-safe_xgb_cross_driver_h3_s123": {
+            "auprc": 0.5139,
+            "auc_roc": 0.7949,
+            "event_auprc": 0.4116,
+            "precision_at_recall_0.8": 0.2147,
+            "event_detection_recall": 0.5622
+          },
+          "task3_WM-statspose-safe_xgb_cross_driver_h3_s7": {
+            "auprc": 0.5149,
+            "auc_roc": 0.7923,
+            "event_auprc": 0.4165,
+            "precision_at_recall_0.8": 0.2129,
+            "event_detection_recall": 0.5714
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.5144,
+            "std": 0.0004,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7939,
+            "std": 0.0011,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.413,
+            "std": 0.0025,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2152,
+            "std": 0.0022,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.553,
+            "std": 0.0199,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_vehicle": {
+        "seeds": {
+          "task3_WM-statspose-safe_xgb_cross_vehicle_h3_s42": {
+            "auprc": 0.4502,
+            "auc_roc": 0.8203,
+            "event_auprc": 0.3557,
+            "precision_at_recall_0.8": 0.2333,
+            "event_detection_recall": 0.8092
+          },
+          "task3_WM-statspose-safe_xgb_cross_vehicle_h3_s123": {
+            "auprc": 0.4555,
+            "auc_roc": 0.8195,
+            "event_auprc": 0.3679,
+            "precision_at_recall_0.8": 0.2321,
+            "event_detection_recall": 0.7824
+          },
+          "task3_WM-statspose-safe_xgb_cross_vehicle_h3_s7": {
+            "auprc": 0.4507,
+            "auc_roc": 0.8181,
+            "event_auprc": 0.3621,
+            "precision_at_recall_0.8": 0.2286,
+            "event_detection_recall": 0.8321
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4522,
+            "std": 0.0024,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.8193,
+            "std": 0.0009,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.3619,
+            "std": 0.005,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.2313,
+            "std": 0.002,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.8079,
+            "std": 0.0203,
+            "n_seeds": 3
+          }
+        }
+      }
+    },
+    "gru_SafeFullStruct_task3": {
+      "within_device_temporal": {
+        "seeds": {
+          "task3_Safe-Full-Struct_gru_within_device_temporal_h3_s42": {
+            "auprc": 0.3753,
+            "auc_roc": 0.7699,
+            "event_auprc": 0.2109,
+            "precision_at_recall_0.8": 0.1762,
+            "event_detection_recall": 0.5328
+          },
+          "task3_Safe-Full-Struct_gru_within_device_temporal_h3_s123": {
+            "auprc": 0.4265,
+            "auc_roc": 0.7765,
+            "event_auprc": 0.2723,
+            "precision_at_recall_0.8": 0.1748,
+            "event_detection_recall": 0.5755
+          },
+          "task3_Safe-Full-Struct_gru_within_device_temporal_h3_s7": {
+            "auprc": 0.4408,
+            "auc_roc": 0.7882,
+            "event_auprc": 0.2898,
+            "precision_at_recall_0.8": 0.1907,
+            "event_detection_recall": 0.5185
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.4142,
+            "std": 0.0281,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7782,
+            "std": 0.0075,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.2577,
+            "std": 0.0338,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1806,
+            "std": 0.0072,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.5423,
+            "std": 0.0242,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_driver": {
+        "seeds": {
+          "task3_Safe-Full-Struct_gru_cross_driver_h3_s42": {
+            "auprc": 0.2254,
+            "auc_roc": 0.6883,
+            "event_auprc": 0.0872,
+            "precision_at_recall_0.8": 0.1668,
+            "event_detection_recall": 0.5806
+          },
+          "task3_Safe-Full-Struct_gru_cross_driver_h3_s123": {
+            "auprc": 0.2706,
+            "auc_roc": 0.7078,
+            "event_auprc": 0.1144,
+            "precision_at_recall_0.8": 0.1834,
+            "event_detection_recall": 0.4562
+          },
+          "task3_Safe-Full-Struct_gru_cross_driver_h3_s7": {
+            "auprc": 0.3432,
+            "auc_roc": 0.7528,
+            "event_auprc": 0.1567,
+            "precision_at_recall_0.8": 0.1982,
+            "event_detection_recall": 0.4608
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.2797,
+            "std": 0.0485,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7163,
+            "std": 0.027,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.1194,
+            "std": 0.0286,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1828,
+            "std": 0.0128,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.4992,
+            "std": 0.0576,
+            "n_seeds": 3
+          }
+        }
+      },
+      "cross_vehicle": {
+        "seeds": {
+          "task3_Safe-Full-Struct_gru_cross_vehicle_h3_s42": {
+            "auprc": 0.4495,
+            "auc_roc": 0.803,
+            "event_auprc": 0.3179,
+            "precision_at_recall_0.8": 0.2009,
+            "event_detection_recall": 0.7595
+          },
+          "task3_Safe-Full-Struct_gru_cross_vehicle_h3_s123": {
+            "auprc": 0.4444,
+            "auc_roc": 0.8,
+            "event_auprc": 0.3169,
+            "precision_at_recall_0.8": 0.1968,
+            "event_detection_recall": 0.7137
+          },
+          "task3_Safe-Full-Struct_gru_cross_vehicle_h3_s7": {
+            "auprc": 0.4142,
+            "auc_roc": 0.7905,
+            "event_auprc": 0.288,
+            "precision_at_recall_0.8": 0.193,
+            "event_detection_recall": 0.7519
+          }
+        },
+        "aggregate": {
+          "auprc": {
+            "mean": 0.436,
+            "std": 0.0156,
+            "n_seeds": 3
+          },
+          "auc_roc": {
+            "mean": 0.7978,
+            "std": 0.0053,
+            "n_seeds": 3
+          },
+          "event_auprc": {
+            "mean": 0.3076,
+            "std": 0.0138,
+            "n_seeds": 3
+          },
+          "precision_at_recall_0.8": {
+            "mean": 0.1969,
+            "std": 0.0032,
+            "n_seeds": 3
+          },
+          "event_detection_recall": {
+            "mean": 0.7417,
+            "std": 0.02,
+            "n_seeds": 3
+          }
+        }
+      }
+    }
+  }
+}

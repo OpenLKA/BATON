@@ -1,0 +1,62 @@
+{
+  "n_windows": 1161794,
+  "n_routes": 563,
+  "class_order": [
+    "Stopped",
+    "LaneChange",
+    "Turning",
+    "Braking",
+    "Accelerating",
+    "CarFollowing"
+  ],
+  "per_class_positive_rate": {
+    "Stopped": 0.18991060377313018,
+    "LaneChange": 0.01302296276276173,
+    "Turning": 0.16558787530319488,
+    "Braking": 0.21803348958593347,
+    "Accelerating": 0.11327653611569694,
+    "CarFollowing": 0.40279085621030924
+  },
+  "per_class_positive_count": {
+    "Stopped": 220637,
+    "LaneChange": 15130,
+    "Turning": 192379,
+    "Braking": 253310,
+    "Accelerating": 131604,
+    "CarFollowing": 467960
+  },
+  "n_positive_classes_histogram": {
+    "0": 355609,
+    "1": 443312,
+    "2": 262637,
+    "3": 88516,
+    "4": 11714,
+    "5": 6
+  },
+  "frac_windows_multilabel_ge2": 0.31233850407215047,
+  "frac_windows_no_class_cruising": 0.30608610476556086,
+  "top_cooccurrence_combos": {
+    "Stopped + CarFollowing": 52162,
+    "Braking + CarFollowing": 45868,
+    "Stopped + Braking + CarFollowing": 41506,
+    "Accelerating + CarFollowing": 37393,
+    "Stopped + Braking": 31580,
+    "Turning + Accelerating": 29422,
+    "Turning + Braking": 26023,
+    "Stopped + Turning + Braking": 20280,
+    "Stopped + Turning": 19105,
+    "Turning + CarFollowing": 13758,
+    "Stopped + Turning + CarFollowing": 12691,
+    "Stopped + Turning + Braking + CarFollowing": 11378,
+    "Turning + Braking + CarFollowing": 6861,
+    "Turning + Accelerating + CarFollowing": 3720,
+    "LaneChange + CarFollowing": 2824
+  },
+  "priority_label_agreement_with_published": 0.9127911034189168,
+  "window_start_mismatches": 0,
+  "tail_fallback_windows": 15466,
+  "empty_fallback_windows_all_zero": 14918,
+  "aggregation": "class positive iff >=50% of window's 1Hz seconds satisfy its rule",
+  "source_samples": "/home/henry/Desktop/Drive/BATON_Benchmark/BATON/benchmark_v2/task1_action_samples.csv",
+  "elapsed_s": 175.82253336906433
+}

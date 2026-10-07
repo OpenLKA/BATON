@@ -23,7 +23,7 @@
 </p>
 
 *A large-scale multimodal benchmark for bidirectional human–DAS control transition in naturalistic driving*<br/>
-*Submitted to ACM Multimedia 2026*
+*Under review at the KDD 2027 Datasets and Benchmarks Track*
 
 </div>
 
@@ -66,13 +66,13 @@
 
 <div align="center">
 
-| 🌍 Routes | 👤 Drivers | 🚙 Car Models | ⏱️ Duration | 🔄 Handover Events |
+| 🌍 Routes | 👤 Drivers | 🚙 Car Models | ⏱️ Duration | 🔄 Transitions (benchmark) |
 |:---------:|:----------:|:-------------:|:-----------:|:-----------------:|
-| **380** | **127** | **84** | **136.6 h** | **2,892** |
+| **781** | **173** | **108** | **204.9 h** | **3,593** |
 
 | 🤖 DAS Driving | 🧑 Human Driving | ⬆️ DAS Handover | ↩️ Human Takeover | 🌍 Coverage |
 |:--------------:|:----------------:|:---------------:|:-----------------:|:-----------:|
-| 52.5% | 47.5% | **1,460** | **1,432** | 6 Continents |
+| 49.0% | 51.0% | **1,800** | **1,793** | 5 Continents |
 
 </div>
 
@@ -146,7 +146,7 @@
 BATON/
 ├── benchmark/                   # Benchmark data and generation code
 │   ├── generate_benchmark.py        # Full benchmark construction pipeline
-│   ├── routes.csv                   # Route metadata (380 routes)
+│   ├── routes.csv                   # Route metadata (781 routes; 565 benchmark bundles)
 │   ├── action_labels.csv            # 1 Hz action labels
 │   ├── task1_action_samples.csv     # Task 1 samples
 │   ├── task2_activation_samples_h{1,3,5}.csv   # Task 2 at 3 horizons
